@@ -1,4 +1,4 @@
-package com.mariathecharmix.sd.beans;
+package com.mariathecharmix.sd.RegistroUsuarios.beans;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -63,10 +63,20 @@ public class User implements Serializable{
 	public User(Long idUser) {
 		this.id = idUser;
 	}
+	
+		
+	public User(Long id, String firstName, String lastName, String email, String username, String password,
+			String confirmPassword, Set<Role> roles) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
+		this.roles = roles;
+	}
 
-	 
-	
-	
 	public Long getIdUser() {
 		return id;
 	}

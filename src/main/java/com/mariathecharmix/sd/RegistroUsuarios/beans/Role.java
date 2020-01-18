@@ -1,4 +1,4 @@
-package com.mariathecharmix.sd.beans;
+package com.mariathecharmix.sd.RegistroUsuarios.beans;
 
 
 import java.io.Serializable;
@@ -13,6 +13,11 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class Role implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8824886372362173897L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="native")
 	@GenericGenerator(name="native", strategy="native")
@@ -25,7 +30,25 @@ public class Role implements Serializable{
 	private String description;
 
 	
+	public Role() {
+		// TODO Auto-generated constructor stub
+	}
 	
+	
+	public Role(Long idRole) {
+		this.id = idRole;
+	}
+	
+	
+	
+	
+	public Role(Long id, String name, String description) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+	}
+
+
 	public Long getIdUser() {
 		return id;
 	}
