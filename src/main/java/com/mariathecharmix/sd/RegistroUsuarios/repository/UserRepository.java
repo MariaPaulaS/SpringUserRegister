@@ -9,5 +9,7 @@ import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long>{
+	
+
 
 }

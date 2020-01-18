@@ -60,8 +60,8 @@ public class User implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(Long idUser) {
-		this.id = idUser;
+	public User(Long id) {
+		this.id = id;
 	}
 	
 		
@@ -77,11 +77,11 @@ public class User implements Serializable{
 		this.roles = roles;
 	}
 
-	public Long getIdUser() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setIdUser(Long idUser) {
+	public void setId(Long idUser) {
 		this.id = idUser;
 	}
 

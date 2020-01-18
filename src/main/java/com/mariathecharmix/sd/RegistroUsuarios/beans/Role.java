@@ -35,12 +35,10 @@ public class Role implements Serializable{
 	}
 	
 	
-	public Role(Long idRole) {
-		this.id = idRole;
+	public Role(Long id) {
+		this.id = id;
 	}
-	
-	
-	
+
 	
 	public Role(Long id, String name, String description) {
 		this.id = id;
@@ -49,11 +47,11 @@ public class Role implements Serializable{
 	}
 
 
-	public Long getIdUser() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setIdUser(Long idUser) {
+	public void setId(Long idUser) {
 		this.id = idUser;
 	}
 
