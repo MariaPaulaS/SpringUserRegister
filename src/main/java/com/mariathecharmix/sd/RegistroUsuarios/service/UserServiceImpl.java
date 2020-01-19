@@ -36,6 +36,11 @@ public class UserServiceImpl implements UserService{
 	
 	private boolean checkPasswordValid(User user) throws Exception {
 		
+		if(user.getConfirmPassword() == null || user.getConfirmPassword().isEmpty()) {
+			throw new Exception("Las verificacion de contraseña es obligatoria");
+
+		}
+		
 		if(!user.getPassword().equals(user.getConfirmPassword())) {
 			
 			throw new Exception("Las contraseñas no coinciden");
@@ -55,6 +60,39 @@ public class UserServiceImpl implements UserService{
 		
 		
 		return user;
+	}
+
+
+	@Override
+	public User getUserById(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		return userRepository.findById(id).orElseThrow(()-> new Exception("El usuario que busca no existe") );
+	}
+
+
+	@Override
+	public User updateUser(User fromUser) throws Exception {
+		// TODO Auto-generated method stub
+		User toUser = userRepository.findById(fromUser.getId()).orElseThrow(()-> new Exception ("El usuario no se pudo actualizar"));
+		
+		mapUser(fromUser, toUser);
+		
+		userRepository.save(toUser);
+		
+		return toUser;
+		
+		
+	}
+	
+	
+	protected void mapUser(User from, User to) {
+		to.setFirstName(from.getFirstName());
+		to.setLastName(from.getLastName());
+		to.setUsername(from.getUsername());
+		to.setEmail(from.getEmail());
+		to.setRoles(from.getRoles());
+	//	to.setPassword(from.getPassword());
+		
 	}
 
 }
