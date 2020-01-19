@@ -11,5 +11,6 @@ import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 public interface UserRepository extends CrudRepository<User, Long>{
 	
 
-
+		public Optional<User> findByUsername(String username);
+	
 }
