@@ -84,7 +84,11 @@ public class UserServiceImpl implements UserService{
 		
 	}
 	
-	
+	/**
+	 * Método que le asigna los atributos de un objeto viejo a un objeto nuevo.
+	 * @param from
+	 * @param to
+	 */
 	protected void mapUser(User from, User to) {
 		to.setFirstName(from.getFirstName());
 		to.setLastName(from.getLastName());
@@ -92,7 +96,18 @@ public class UserServiceImpl implements UserService{
 		to.setEmail(from.getEmail());
 		to.setRoles(from.getRoles());
 	//	to.setPassword(from.getPassword());
-		
+	
 	}
 
+
+	@Override
+	public void deleteUser(Long id) throws Exception {
+	
+		User userToDelete = userRepository.findById(id).orElseThrow(()-> new Exception("El usuario para eliminar no ha sido encontrado"));
+		
+		userRepository.delete(userToDelete);
+
+	}
+	
+	
 }
