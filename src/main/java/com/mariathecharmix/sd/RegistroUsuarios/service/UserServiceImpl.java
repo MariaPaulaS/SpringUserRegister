@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
 import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.UserRepository;
 
@@ -107,6 +108,27 @@ public class UserServiceImpl implements UserService{
 		
 		userRepository.delete(userToDelete);
 
+	}
+
+	public User changePassword(ChangePasswordForm form) throws Exception{
+		User storedUser = userRepository
+				.findById( form.getId() )
+				.orElseThrow(() -> new Exception("UsernotFound in ChangePassword -"+this.getClass().getName()));
+		
+		if( !form.getCurrentPassword().equals(storedUser.getPassword())) {
+			throw new Exception("Contraseña actual incorrecta");
+		}
+		
+		if ( form.getCurrentPassword().equals(form.getNewPassword())) {
+			throw new Exception("La contraseña nueva debe ser diferente de la actual");
+		}
+		
+		if( !form.getNewPassword().equals(form.getConfirmPassword())) {
+			throw new Exception("La contraseña nueva y la confirmacion no son iguales.");
+		}
+		
+		storedUser.setPassword(form.getNewPassword());
+		return userRepository.save(storedUser);
 	}
 	
 	
