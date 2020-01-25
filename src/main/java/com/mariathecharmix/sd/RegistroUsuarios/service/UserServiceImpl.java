@@ -3,6 +3,10 @@ package com.mariathecharmix.sd.RegistroUsuarios.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
@@ -14,6 +18,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public Iterable<User> getAllUsers() {
@@ -56,6 +63,9 @@ public class UserServiceImpl implements UserService{
 	public User createUser(User user) throws Exception {
 		
 		if(checkUsernameAvailable(user) && checkPasswordValid(user) ) {
+			
+			String encodePassword = bCryptPasswordEncoder.encode(user.getPassword());
+			user.setPassword(encodePassword);
 			user = userRepository.save(user);
 		}
 		
@@ -100,8 +110,9 @@ public class UserServiceImpl implements UserService{
 	
 	}
 
-
+	
 	@Override
+//	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	public void deleteUser(Long id) throws Exception {
 	
 		User userToDelete = userRepository.findById(id).orElseThrow(()-> new Exception("El usuario para eliminar no ha sido encontrado"));
@@ -115,7 +126,7 @@ public class UserServiceImpl implements UserService{
 				.findById( form.getId() )
 				.orElseThrow(() -> new Exception("UsernotFound in ChangePassword -"+this.getClass().getName()));
 		
-		if( !form.getCurrentPassword().equals(storedUser.getPassword())) {
+		if( !isLoggedUserADMIN() && !form.getCurrentPassword().equals(storedUser.getPassword())) {
 			throw new Exception("Contraseña actual incorrecta");
 		}
 		
@@ -127,9 +138,29 @@ public class UserServiceImpl implements UserService{
 			throw new Exception("La contraseña nueva y la confirmacion no son iguales.");
 		}
 		
-		storedUser.setPassword(form.getNewPassword());
+		String encodePassword = bCryptPasswordEncoder.encode(form.getNewPassword());
+		storedUser.setPassword(encodePassword);
 		return userRepository.save(storedUser);
 	}
+	
+	
+	public boolean isLoggedUserADMIN(){
+		 return loggedUserHasRole("ROLE_ADMIN");
+		}
+
+		public boolean loggedUserHasRole(String role) {
+		 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 UserDetails loggedUser = null;
+		 Object roles = null; 
+		 if (principal instanceof UserDetails) {
+		  loggedUser = (UserDetails) principal;
+		 
+		  roles = loggedUser.getAuthorities().stream()
+		    .filter(x -> role.equals(x.getAuthority() ))      
+		    .findFirst().orElse(null); //loggedUser = null;
+		 }
+		 return roles != null ?true :false;
+		}
 	
 	
 }
