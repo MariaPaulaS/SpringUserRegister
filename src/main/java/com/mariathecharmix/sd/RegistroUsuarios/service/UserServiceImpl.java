@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
+import com.mariathecharmix.sd.RegistroUsuario.exceptions.UsernameOrIdNotFoundException;
 import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.UserRepository;
 
@@ -75,11 +76,9 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public User getUserById(Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return userRepository.findById(id).orElseThrow(()-> new Exception("El usuario que busca no existe.") );
+	public User getUserById(Long id) throws UsernameOrIdNotFoundException {
+		return userRepository.findById(id).orElseThrow(() -> new UsernameOrIdNotFoundException("El Id del usuario no existe."));
 	}
-
 
 	@Override
 	public User updateUser(User fromUser) throws Exception {
@@ -112,15 +111,12 @@ public class UserServiceImpl implements UserService{
 
 	
 	@Override
-//	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-	public void deleteUser(Long id) throws Exception {
-	
-		User userToDelete = userRepository.findById(id).orElseThrow(()-> new Exception("El usuario para eliminar no ha sido encontrado."));
-		
-		userRepository.delete(userToDelete);
-
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	public void deleteUser(Long id) throws UsernameOrIdNotFoundException {
+		User user = getUserById(id);
+		userRepository.delete(user);
 	}
-
+	
 	public User changePassword(ChangePasswordForm form) throws Exception{
 		User storedUser = userRepository
 				.findById( form.getId() )

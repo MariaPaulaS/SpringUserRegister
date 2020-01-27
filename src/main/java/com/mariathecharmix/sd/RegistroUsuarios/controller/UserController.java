@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
+import com.mariathecharmix.sd.RegistroUsuario.exceptions.UsernameOrIdNotFoundException;
 import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.RoleRepository;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.UserRepository;
@@ -131,14 +132,14 @@ public class UserController {
 	}
 
 	@GetMapping("/deleteUser/{id}")
-	public String deleteUser(Model model, @PathVariable(name = "id") Long id) throws Exception {
+	public String deleteUser(Model model, @PathVariable(name = "id") Long id) throws UsernameOrIdNotFoundException {
 
 		try {
 
 			userService.deleteUser(id);
 
-		} catch (Exception e) {
-			model.addAttribute("listErrorMessage", "El usuario no existe.");
+		} catch (UsernameOrIdNotFoundException e) {
+			model.addAttribute("listErrorMessage", e.getMessage());
 		}
 
 		return userForm(model);

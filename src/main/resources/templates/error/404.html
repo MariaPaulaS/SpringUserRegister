@@ -30,7 +30,7 @@
 <div class="container text-center">
 	<div class="mx-auto col-10 card">
 		<div class="card-header">
-			<h4 th:text="${error}">Page Not Found</h4>
+			<h4><span th:text="${status}"></span> - <span th:text="${error}"></span></h4>
 		</div>
 		<div class="card-body">
 			<a href="/userForm" ><img src="static/img/error/404.png" th:src="@{/img/error/404.png}"/></a>
