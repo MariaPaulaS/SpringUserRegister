@@ -77,14 +77,14 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User getUserById(Long id) throws Exception {
 		// TODO Auto-generated method stub
-		return userRepository.findById(id).orElseThrow(()-> new Exception("El usuario que busca no existe") );
+		return userRepository.findById(id).orElseThrow(()-> new Exception("El usuario que busca no existe.") );
 	}
 
 
 	@Override
 	public User updateUser(User fromUser) throws Exception {
 		// TODO Auto-generated method stub
-		User toUser = userRepository.findById(fromUser.getId()).orElseThrow(()-> new Exception ("El usuario no se pudo actualizar"));
+		User toUser = userRepository.findById(fromUser.getId()).orElseThrow(()-> new Exception ("El usuario no se pudo actualizar."));
 		
 		mapUser(fromUser, toUser);
 		
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService{
 //	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	public void deleteUser(Long id) throws Exception {
 	
-		User userToDelete = userRepository.findById(id).orElseThrow(()-> new Exception("El usuario para eliminar no ha sido encontrado"));
+		User userToDelete = userRepository.findById(id).orElseThrow(()-> new Exception("El usuario para eliminar no ha sido encontrado."));
 		
 		userRepository.delete(userToDelete);
 
