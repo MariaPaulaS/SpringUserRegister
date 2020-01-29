@@ -1,5 +1,7 @@
 package com.mariathecharmix.sd.RegistroUsuarios.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
 import com.mariathecharmix.sd.RegistroUsuario.exceptions.CustomeFieldValidationException;
 import com.mariathecharmix.sd.RegistroUsuario.exceptions.UsernameOrIdNotFoundException;
+import com.mariathecharmix.sd.RegistroUsuarios.beans.Role;
 import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.RoleRepository;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.UserRepository;
@@ -39,6 +42,19 @@ public class UserController {
 		return "index";
 
 	}
+	
+	@GetMapping("/signup")
+	public String signup(Model model) {
+		Role userRole = roleRepository.findByName("USER");
+		List<Role> roles = Arrays.asList(userRole);
+		model.addAttribute("userForm", new User());
+		model.addAttribute("roles", roles);
+		model.addAttribute("signup", true);
+		
+		return "user-form/user-signup";
+		
+		
+	}
 
 	@GetMapping("/userForm")
 	public String userForm(Model model) {
@@ -49,6 +65,32 @@ public class UserController {
 		return "user-form/user-view";
 	}
 
+	
+	@PostMapping("/signup")
+	public String postSignup(@Valid @ModelAttribute("userForm") User user, BindingResult result, Model model) {
+	
+		Role userRole = roleRepository.findByName("USER");
+		List<Role> roles = Arrays.asList(userRole);
+		model.addAttribute("userForm", user);
+		model.addAttribute("roles",roles);
+		model.addAttribute("signup",true);
+
+		if(result.hasErrors()) {
+			return "user-form/user-signup";
+		}else {
+			try {
+				userService.createUser(user);
+			} catch (CustomeFieldValidationException cfve) {
+				result.rejectValue(cfve.getFieldName(), null, cfve.getMessage());
+			}catch (Exception e) {
+				model.addAttribute("formErrorMessage",e.getMessage());
+			}
+		}
+		return index();
+	
+	
+	}
+	
 	@PostMapping("/userForm")
 	public String createUser(@Valid @ModelAttribute("userForm") User user, BindingResult result, ModelMap model) {
 
