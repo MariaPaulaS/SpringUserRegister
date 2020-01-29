@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.mariathecharmix.sd.RegistroUsuario.dto.ChangePasswordForm;
+import com.mariathecharmix.sd.RegistroUsuario.exceptions.CustomeFieldValidationException;
 import com.mariathecharmix.sd.RegistroUsuario.exceptions.UsernameOrIdNotFoundException;
 import com.mariathecharmix.sd.RegistroUsuarios.beans.User;
 import com.mariathecharmix.sd.RegistroUsuarios.repository.RoleRepository;
@@ -62,15 +63,27 @@ public class UserController {
 				userService.createUser(user);
 				model.addAttribute("userForm", new User());
 				model.addAttribute("listTab", "active");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				model.addAttribute("formErrorMessage", e.getMessage());
-				model.addAttribute("userForm", user);
-				model.addAttribute("formTab", "active");
-				model.addAttribute("userList", userService.getAllUsers());
-				model.addAttribute("roles", roleRepository.findAll());
-
 			}
+			
+			 catch (CustomeFieldValidationException e) {
+					result.rejectValue(e.getFieldName(), null, e.getMessage());
+					model.addAttribute("userForm", user);
+					model.addAttribute("formTab", "active");
+					model.addAttribute("userList", userService.getAllUsers());
+					model.addAttribute("roles", roleRepository.findAll());
+
+				}
+
+			
+			 catch (Exception e) {
+					// TODO Auto-generated catch block
+					model.addAttribute("formErrorMessage", e.getMessage());
+					model.addAttribute("userForm", user);
+					model.addAttribute("formTab", "active");
+					model.addAttribute("userList", userService.getAllUsers());
+					model.addAttribute("roles", roleRepository.findAll());
+
+				}
 		}
 
 		model.addAttribute("userList", userService.getAllUsers());
@@ -133,6 +146,7 @@ public class UserController {
 
 	@GetMapping("/deleteUser/{id}")
 	public String deleteUser(Model model, @PathVariable(name = "id") Long id) throws UsernameOrIdNotFoundException {
+
 
 		try {
 
